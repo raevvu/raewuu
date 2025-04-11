@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>次元之戀：我的乙女成長旅程</title>
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+      background: #fff0f5;
+      color: #333;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    .options button {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      width: 100%;
+      background-color: #fce4ec;
+      border: 1px solid #f06292;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .options button:hover {
+      background-color: #f8bbd0;
+    }
+    #result {
+      margin-top: 30px;
+      padding: 15px;
+      background: #fff3f8;
+      border: 2px dashed #ec407a;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>次元之戀：我的乙女成長旅程</h1>
+  <div id="game">
+    <div class="question" id="questionText"></div>
+    <div class="options" id="optionButtons"></div>
+  </div>
+  <div id="result" style="display:none;"></div>
+
+  <script>
+    const questions = [
+      {
+        text: "第一關：你和心儀角色見面時，會怎麼打招呼？",
+        options: [
+          { text: "安靜地微笑", score: 1 },
+          { text: "主動揮手大喊名字", score: 2 },
+          { text: "害羞低頭不語", score: 0 },
+        ]
+      },
+      {
+        text: "第二關：他說了什麼最讓你感到安慰？",
+        options: [
+          { text: "別逞強，先休息吧。", score: 2 },
+          { text: "你已經做得很好了。", score: 1 },
+          { text: "加油撐下去！", score: 0 },
+        ]
+      },
+      {
+        text: "第三關：隊友質疑你能否勝任領導者，你會怎麼回應？",
+        options: [
+          { text: "鎮定分析戰術", score: 2 },
+          { text: "微笑說『相信我』", score: 1 },
+          { text: "把決策交給他人", score: 0 },
+        ]
+      },
+      {
+        text: "第四關：你會怎麼分享乙遊的喜好？",
+        options: [
+          { text: "拍照並搭配文字發文", score: 2 },
+          { text: "傳給一位朋友試探反應", score: 1 },
+          { text: "保留在手機裡欣賞", score: 0 },
+        ]
+      },
+      {
+        text: "第五關：朋友問你為何喜歡虛擬角色，你會說？",
+        options: [
+          { text: "這是我真實情感的一部分。", score: 2 },
+          { text: "只是玩玩而已啦～", score: 1 },
+          { text: "我不太想說...", score: 0 },
+        ]
+      }
+    ];
+
+    let currentQuestion = 0;
+    let totalScore = 0;
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById("questionText").textContent = q.text;
+      const optionsDiv = document.getElementById("optionButtons");
+      optionsDiv.innerHTML = "";
+      q.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.textContent = opt.text;
+        btn.onclick = () => handleAnswer(opt.score);
+        optionsDiv.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(score) {
+      totalScore += score;
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById("game").style.display = "none";
+      const resultDiv = document.getElementById("result");
+      resultDiv.style.display = "block";
+      let msg = "";
+      if (totalScore >= 9) {
+        msg = "🌟 妳已成為自己世界的主角，勇敢又閃耀！";
+      } else if (totalScore >= 6) {
+        msg = "💖 妳正在學會照顧自己，請繼續相信自己。";
+      } else {
+        msg = "🌱 妳踏出了一小步，也是一種勇氣！";
+      }
+      resultDiv.innerHTML = `<h2>遊戲結束</h2><p>${msg}</p><p>總得分：${totalScore}</p>`;
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
