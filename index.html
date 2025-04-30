@@ -1,136 +1,193 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <title>次元之戀：我的乙女成長旅程</title>
+  <meta charset="UTF-8" />
+  <title>素人參政生存賽</title>
   <style>
     body {
       font-family: "Noto Sans TC", sans-serif;
-      background: #fff0f5;
-      color: #333;
+      background: #f0f2f5;
+      margin: 0;
       padding: 20px;
-      max-width: 600px;
+    }
+    .container {
+      max-width: 700px;
       margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      transition: all 0.5s ease-in-out;
     }
     .question {
+      font-size: 20px;
       margin-bottom: 20px;
     }
-    .options button {
-      display: block;
+    .option {
+      background: #e9ecef;
+      padding: 15px;
       margin: 10px 0;
-      padding: 10px;
-      width: 100%;
-      background-color: #fce4ec;
-      border: 1px solid #f06292;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
+      transition: all 0.3s;
     }
-    .options button:hover {
-      background-color: #f8bbd0;
+    .option:hover {
+      background: #dee2e6;
     }
-    #result {
+    .result {
+      font-weight: bold;
       margin-top: 30px;
       padding: 15px;
-      background: #fff3f8;
-      border: 2px dashed #ec407a;
-      border-radius: 10px;
+      background-color: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 8px;
+    }
+    .character {
+      text-align: center;
+      margin-bottom: 20px;
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-  <h1>次元之戀：我的乙女成長旅程</h1>
-  <div id="game">
-    <div class="question" id="questionText"></div>
-    <div class="options" id="optionButtons"></div>
+  <div class="container" id="game">
+    <div class="character">
+      <img src="https://i.imgur.com/Uz3JYyM.png" alt="角色卡" width="150"/>
+      <h2>你是：熱血青年參政者</h2>
+    </div>
+
+    <div class="question" id="question"></div>
+    <div class="option" id="opt1" onclick="choose(0)"></div>
+    <div class="option" id="opt2" onclick="choose(1)"></div>
+    <div class="option" id="opt3" onclick="choose(2)"></div>
+
+    <div class="result" id="result" style="display:none;"></div>
   </div>
-  <div id="result" style="display:none;"></div>
 
   <script>
     const questions = [
       {
-        text: "第一關：你和心儀角色見面時，會怎麼打招呼？",
+        text: "關卡1：你參政的第一步？",
         options: [
-          { text: "安靜地微笑", score: 1 },
-          { text: "主動揮手大喊名字", score: 2 },
-          { text: "害羞低頭不語", score: 0 },
+          { text: "A. 投入倡議運動先累積聲量", score: 3 },
+          { text: "B. 加入政黨青年部門實習", score: 2 },
+          { text: "C. 當地方助理打基礎", score: 1 }
         ]
       },
       {
-        text: "第二關：他說了什麼最讓你感到安慰？",
+        text: "關卡2：你要如何拓展基本盤？",
         options: [
-          { text: "別逞強，先休息吧。", score: 2 },
-          { text: "你已經做得很好了。", score: 1 },
-          { text: "加油撐下去！", score: 0 },
+          { text: "A. 開直播節目", score: 3 },
+          { text: "B. 借場地辦講座", score: 2 },
+          { text: "C. 辦服務攤位", score: 1 }
         ]
       },
       {
-        text: "第三關：隊友質疑你能否勝任領導者，你會怎麼回應？",
+        text: "關卡3：你想爭取政黨提名，怎麼辦？",
         options: [
-          { text: "鎮定分析戰術", score: 2 },
-          { text: "微笑說『相信我』", score: 1 },
-          { text: "把決策交給他人", score: 0 },
+          { text: "A. 妥協立場，支持主流價值", score: 2 },
+          { text: "B. 衝撞路線，突顯青年特色", score: 3 },
+          { text: "C. 不分區試水溫", score: 1 }
         ]
       },
       {
-        text: "第四關：你會怎麼分享乙遊的喜好？",
+        text: "關卡4：面對記者訪問統獨立場，你會？",
         options: [
-          { text: "拍照並搭配文字發文", score: 2 },
-          { text: "傳給一位朋友試探反應", score: 1 },
-          { text: "保留在手機裡欣賞", score: 0 },
+          { text: "A. 誠實作答", score: 3 },
+          { text: "B. 模糊帶過", score: 1 },
+          { text: "C. 用創意轉移焦點", score: 2 }
         ]
       },
       {
-        text: "第五關：朋友問你為何喜歡虛擬角色，你會說？",
+        text: "關卡5：黨邀你空降選區，你會？",
         options: [
-          { text: "這是我真實情感的一部分。", score: 2 },
-          { text: "只是玩玩而已啦～", score: 1 },
-          { text: "我不太想說...", score: 0 },
+          { text: "A. 接受空降挑戰", score: 2 },
+          { text: "B. 要求回熟悉選區", score: 3 },
+          { text: "C. 無黨參選", score: 1 }
+        ]
+      },
+      {
+        text: "關卡6：選戰開打，主力放在哪？",
+        options: [
+          { text: "A. 社群經營", score: 3 },
+          { text: "B. 掃街握手拜票", score: 2 },
+          { text: "C. 辦政策論壇", score: 1 }
+        ]
+      },
+      {
+        text: "關卡7：被指控參與激進社運，你會？",
+        options: [
+          { text: "A. 發聲明澄清", score: 3 },
+          { text: "B. 反擊攻擊者", score: 2 },
+          { text: "C. 不理會", score: 1 }
+        ]
+      },
+      {
+        text: "關卡8：其他候選人邀你聯合造勢",
+        options: [
+          { text: "A. 合作資源共享", score: 2 },
+          { text: "B. 拒絕合作", score: 3 },
+          { text: "C. 私下交換資源", score: 1 }
+        ]
+      },
+      {
+        text: "關卡9：你拿到對手的黑資料，會？",
+        options: [
+          { text: "A. 公開打擊", score: 2 },
+          { text: "B. 不公開", score: 3 },
+          { text: "C. 給媒體處理", score: 1 }
+        ]
+      },
+      {
+        text: "關卡10：選前最後行程，你會？",
+        options: [
+          { text: "A. 拜訪弱勢社群", score: 3 },
+          { text: "B. 參加大型造勢晚會", score: 2 },
+          { text: "C. 拍感性回顧影片", score: 1 }
         ]
       }
     ];
 
-    let currentQuestion = 0;
+    let current = 0;
     let totalScore = 0;
 
-    function showQuestion() {
-      const q = questions[currentQuestion];
-      document.getElementById("questionText").textContent = q.text;
-      const optionsDiv = document.getElementById("optionButtons");
-      optionsDiv.innerHTML = "";
-      q.options.forEach(opt => {
-        const btn = document.createElement("button");
-        btn.textContent = opt.text;
-        btn.onclick = () => handleAnswer(opt.score);
-        optionsDiv.appendChild(btn);
-      });
+    function updateQuestion() {
+      const q = questions[current];
+      document.getElementById("question").innerText = q.text;
+      document.getElementById("opt1").innerText = q.options[0].text;
+      document.getElementById("opt2").innerText = q.options[1].text;
+      document.getElementById("opt3").innerText = q.options[2].text;
     }
 
-    function handleAnswer(score) {
+    function choose(index) {
+      const score = questions[current].options[index].score;
       totalScore += score;
-      currentQuestion++;
-      if (currentQuestion < questions.length) {
-        showQuestion();
+      current++;
+      if (current < questions.length) {
+        updateQuestion();
       } else {
-        showResult();
+        showEnding();
       }
     }
 
-    function showResult() {
-      document.getElementById("game").style.display = "none";
-      const resultDiv = document.getElementById("result");
-      resultDiv.style.display = "block";
-      let msg = "";
-      if (totalScore >= 9) {
-        msg = "🌟 妳已成為自己世界的主角，勇敢又閃耀！";
-      } else if (totalScore >= 6) {
-        msg = "💖 妳正在學會照顧自己，請繼續相信自己。";
+    function showEnding() {
+      const game = document.getElementById("game");
+      game.innerHTML = "<h2>🎉 結局揭曉！</h2>";
+      if (totalScore >= 25) {
+        game.innerHTML += "<p>你成功當選！成為改革的象徵，從素人踏進國會。</p>";
+      } else if (totalScore >= 18) {
+        game.innerHTML += "<p>雖然未當選，但成為政界矚目的新星，被延攬進政策團隊。</p>";
       } else {
-        msg = "🌱 妳踏出了一小步，也是一種勇氣！";
+        game.innerHTML += "<p>你經歷一場選舉洗禮，雖落敗，但也種下了改變的種子。</p>";
       }
-      resultDiv.innerHTML = `<h2>遊戲結束</h2><p>${msg}</p><p>總得分：${totalScore}</p>`;
+      game.innerHTML += `<p>你的最終分數是：${totalScore} 分</p>`;
     }
 
-    showQuestion();
+    updateQuestion();
   </script>
 </body>
 </html>
